@@ -1,0 +1,38 @@
+Simple is fine for this class.  Clean-up and format your .csv's, get them to import.
+Instructors have good resources for that.  If that's 2D arrays or dictionaries, it doesn't matter.
+The hash table requirement only applies to your package data, so distances or addresses can be something you're more
+comfortable with.  I personally used 1d/2d arrays as the index is easy to translate into graph node ids.
+
+Use the simplest algorithm you can understand.  Get it written.  With each step, write yourself a print() line that
+describes what change is happening and have it show you that variable experiencing the change.
+Do this for every step.  You probably understand this algorithm just fine, but you may not know what Python is trying
+to do with your data sometimes (looking at you, math.floor/ceil functions returning floats.  WHY?).
+Think it's done?  Create your trucks.
+
+Think about what information you want your trucks to keep track of and give them the variables to do so.
+Start by manually loading them.  Track the truck's route.  Track the packages it delivered.
+Check them at the end to make sure your algorithm is running how you want it to and that it's calculating and
+tracking distances properly.
+
+Don't go down a timestamp rabbit hole. Time is a math equation.  How many minutes is 8am?
+How many miles is your truck traveling every 60 minutes?  Your truck will know exactly when it delivered your package.
+You can store that somewhere.  You can recall it later when you need to check a status at a specific time.
+If your packages know their timeline, you can find the status anywhere in that.
+
+Now that you're done with your program, you can decide if you want to chase optimal algorithms, automatic loading of
+trucks, etc.  This is a much better approach than trying to plan for those up front.
+
+I was drowning in Dijkstra's for a couple weeks because I couldn't settle on how efficient I wanted this program to be.
+Do I want to optimize the entire graph first?  Do I want to create individual subsets?
+Do I want to factor this into which packages to load?  How will I re-optimize after changing the load?
+How am I still working on the same thing a few weeks later?  I had the imports working fine, when I decided to
+rewrite, it took only 2 days to finish the program.
+
+For the documents, I wrote an Algorithm Overview paper, described the core algorithm in a verbiage pseudocode,
+then how I adapted that to solve the problem, also in a wordy, descriptive pseudocode, then briefly discussed
+how it is similar, how it is different, and the time-complexities.  I included another document in which I typed short
+responses for every single rubric point, following guidance in the instructor-provided Task Directions Summary/FAQ.
+Don't forget the screenshots.  My task was accepted on the first submission.
+
+This course can look a bit confusing or complex up front, but I promise this is as easy as you want to make it for
+yourself.
