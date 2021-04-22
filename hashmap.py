@@ -1,8 +1,7 @@
 class HashMap:
     def __init__(self):  # References fig 7.8.1 from ZyBooks and https://www.youtube.com/watch?v=9HFbhPscPU0
-        # Set size equal to 40 as that is the amount of packages for this specific situation, then we will
-        # set the map equal to empty and the size we specified.
-        self.size = 40
+        # Set size equal to 10 as we want to have a smaller map, and can just linear search for packages beyond that
+        self.size = 10
         self.map = [None] * self.size
 
     """
@@ -10,7 +9,7 @@ class HashMap:
     We mod 100 as our the number of packages IDs are currently less than 100.
     """
     def create_hash(self, key):
-        return int(key) % 100
+        return int(key) % len(self.map)
 
     """
     Insert a package into our hash table using the create_hash function.
@@ -19,7 +18,6 @@ class HashMap:
     def insert(self, key, value):
         hash_key = self.create_hash(key)  # Get the index value where we will place package
         key_value = [key, value]  # What we actually want to insert into that cell
-
         if self.map[hash_key] is None:  # If index is empty then we will simply add to the list our key and value(s)
             self.map[hash_key] = list([key_value])
             return True
@@ -42,7 +40,7 @@ class HashMap:
         hash_key = self.create_hash(key)
         if self.map[hash_key] is not None:
             for match in self.map[hash_key]:
-                if match[0] == key:
+                if int(match[0]) == key:
                     return match[1]
         return None
 
