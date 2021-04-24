@@ -1,12 +1,11 @@
 import csv
 from hashmap import HashMap as hm
-"""
-This module is for working with the cleaned up csv file.
-"""
 
 """
-Open the csv file and then scan it into the hashmap.
+This module is for working with the cleaned up package_csv file.
 """
+
+# Open the package_csv file and then scan it into the hashmap.
 with open("./resources/package_info.csv", 'r', encoding='utf-8-sig') as p:
     reader = csv.reader(p, delimiter=",")
     hash_map = hm()  # Create an instance of a hashmap
@@ -22,9 +21,8 @@ with open("./resources/package_info.csv", 'r', encoding='utf-8-sig') as p:
         package_notes = row[7]
         delivery_status = 'at the hub'
 
-
-        all_values = [package_id, package_address, package_city, package_state, package_zip,
-                      package_deadline, package_weight, package_notes, delivery_status]  # Create a list of values to store in hash map
+        all_values = [package_id, package_address, package_city,  # Create a list of values to store in hash map
+                      package_state, package_zip, package_deadline, package_weight, package_notes, delivery_status]
         hash_map.insert(package_id, all_values)  # Insert into hash_map,
 
     # Get all of the packages in our hashmap
