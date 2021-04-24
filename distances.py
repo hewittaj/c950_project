@@ -12,28 +12,30 @@ with open("./resources/distance_table_with_names.csv", "r", encoding='utf-8-sig'
 # This determines the next shortest route to deliver to
 def get_next_shortest(current_location):
     shortest_value = 100.0  # Starting minimum value to compare against
-    num = 0
-    # print(distances)
-    # print(float(distances[1][1]))
-    # Infinite loop for some reason!!!
-    while num < 28:
-        for distance in distances[0][current_location]:
-            if distance == '':
-                num += 1
-                continue
-            elif float(distance) <= shortest_value:
-                shortest_value = distance
-                num += 1
-                continue
+    num = 0  # Our number we iterate to compare against all the indexes that are from that location
+    size = len(distances)  # Size of the distance map
+
+    # While the number is less than the size of the map, loop through and get distances
+    while num < size:
+        # If the distance is 0 we aren't moving so we ignore
+        if get_current_distance(num, current_location) == 0:
+            num += 1
+            continue
+        # If the current distance is less than or equal to our shortest value we update
+        if get_current_distance(num, current_location) <= shortest_value:
+            shortest_value = get_current_distance(num, current_location)
+            num += 1
+            continue
+        # Catch all, will continue in the loop
+        else:
+            num += 1
+            continue
+    return shortest_value
 
 
 # Get the current distance using the row and column passed.
 def get_current_distance(row, column):
     current_distance = distances[row][column]
+    if distances[row][column] == '':
+        current_distance = distances[column][row]
     return float(current_distance)
-
-
-# Get the total distance using the row and column passed, plus the current total
-def get_total_distance(row, column, total):
-    total_distance = distances[row][column]
-    return total + float(total_distance)
