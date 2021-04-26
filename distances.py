@@ -10,27 +10,46 @@ with open("./resources/distance_table_with_names.csv", "r", encoding='utf-8-sig'
 
 
 # This determines the next shortest route to deliver to
-def get_next_shortest(current_location):
+def get_next_shortest(current_location, hashmap):
     shortest_value = 100.0  # Starting minimum value to compare against
+    shortest_value_index = 0
     num = 0  # Our number we iterate to compare against all the indexes that are from that location
     size = len(distances)  # Size of the distance map
 
-    # While the number is less than the size of the map, loop through and get distances
+    # While the number is less than the size of the distances table, loop through and get distances
     while num < size:
+        # We want to ignore index 0 because of how the data is set up
+        if num == 0:
+            num += 1
+            continue
         # If the distance is 0 we aren't moving so we ignore
-        if get_current_distance(num, current_location) == 0:
+        if get_current_distance(num, current_location) == 0: # TO DO REWORK LOGIC
             num += 1
             continue
         # If the current distance is less than or equal to our shortest value we update
         if get_current_distance(num, current_location) <= shortest_value:
-            shortest_value = get_current_distance(num, current_location)
-            num += 1
-            continue
+            try:
+                # Loop through the hashmap packages
+                for i in range(1, 41):
+                    # If hashmap has an empty spot
+                    if hashmap.get_val(i)[1] is None:
+                        continue
+                    # If the hashmap at the index matches the distance w/ names table
+                    if hashmap.get_val(i)[1] == distance_with_names[num][2]:
+                        shortest_value = get_current_distance(num, current_location)
+                        shortest_value_index = num
+                num += 1
+                continue
+            except TypeError:  # Excepts if there is a None value in our hashmap
+                num += 1
+                pass
         # Catch all, will continue in the loop
         else:
             num += 1
             continue
-    return shortest_value
+
+    # Return the shortest value, current location index, and shortest value index
+    return shortest_value, current_location, shortest_value_index
 
 
 # Get the current distance using the row and column passed.
