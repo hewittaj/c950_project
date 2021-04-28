@@ -52,8 +52,8 @@ class HashMap:
         if self.map[hash_key] is None:
             return False
         else:
-            for i in range(0, self.map[hash_key]):
-                if self.map[hash_key][i][0] == key:
+            for i in range(0, len(self.map[hash_key])):
+                hash_object_number = int(self.map[hash_key][i][0])
+                if hash_object_number == key:
                     self.map[hash_key].pop(i)
                     return True
-                return False
