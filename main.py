@@ -12,11 +12,14 @@ truck3 = []  # Will be the reserve truck
 # Manually load some of the packages
 
 starting_point = 0  # Starting point is the hub i.e. index 0
-while(len(truck1) < 16): # Load truck 1
-    distance_info = d.get_next_shortest(starting_point, package_hashmap)  # Assign info from the next shortest algo
-    truck1.append(package_hashmap.get_val(distance_info[2]))  # Append information to the truck to be loaded onto
-    print(package_hashmap.get_val(distance_info[2]))
+skip_list = []
+while len(truck1) < 16:  # Load truck 1
+    # Assign info from the next shortest algo
+    distance_info = d.get_next_shortest(starting_point, package_hashmap, skip_list)
+    truck1.append(package_hashmap.get_val(distance_info[3]))  # Append information to the truck to be loaded onto
+    print(package_hashmap.get_val(distance_info[3]))
+    skip_list.append(distance_info[3])
     # Delete the value from the hashmap
-    package_hashmap.delete(distance_info[2])  # Delete package from hashmap
+    package_hashmap.delete(distance_info[3])  # Delete package from hashmap
     starting_point = distance_info[2]  # Update the next starting point
 print(truck1)
