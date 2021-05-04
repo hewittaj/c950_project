@@ -57,3 +57,14 @@ class HashMap:
                 if hash_object_number == key:
                     self.map[hash_key].pop(i)
                     return True
+
+    """
+    This function updates the value at selected hash
+    """
+    def update(self, key, value):
+        hash_key = self.create_hash(key)
+        if self.map[hash_key] is not None:
+            for item in self.map[hash_key]:
+                if item[0] == key:
+                    item[1] = value
+                    return True
