@@ -64,8 +64,12 @@ while len(truck3) < 16:
     # Update the next starting point
     starting_point = distance_info[2]
 
+
+
 print(truck1)
 print(len(truck1))
 print(truck2)
 print(len(truck2))
 print(truck3)
+for num in range(1,41):
+    print(package_hashmap.get_val(num))

@@ -22,8 +22,7 @@ def get_next_shortest(current_location, hashmap, skipped_list, truck_number):
 
         # If the current distance is less than or equal to our shortest value we update
         if get_current_distance(num, current_location) <= shortest_value:
-
-            # Loop through the hashmap packages
+            # Loop through the hashmap of packages
             for i in range(1, 41):
                 # If the number is in our skip list, we don't want to search the hashmap for that value
                 # since it has been removed.
@@ -32,11 +31,19 @@ def get_next_shortest(current_location, hashmap, skipped_list, truck_number):
                 try:
                     # If the hashmap at the index matches the distance w/ names table assign these values
                     if hashmap.get_val(i)[1] == distance_with_names[num][2]:
-                        if 'Can only be' in hashmap.get_val(i)[7] and truck_number != 2:
-                            continue
+                        if 'Can only be' in hashmap.get_val(i)[7] and truck_number == 2:
+                            shortest_value = get_current_distance(num, current_location)
+                            shortest_value_index = num
+                            package_id = i
+
+                            # Most important packages so we add to first truck if possible
+                            return shortest_value, current_location, shortest_value_index, package_id
                         if 'Delayed' in hashmap.get_val(i)[7] and truck_number != 3:
                             continue
                         if 'Wrong address' in hashmap.get_val(i)[7] and truck_number != 3:
+                            updated = '9', '410 S State St', 'Salt Lake City', 'UT', '84111', 'EOD', '2', \
+                                      'Wrong address listed', 'at the hub'
+                            hashmap.update(i, updated)
                             continue
                         if '10:30' in hashmap.get_val(i)[5] or '9:00' in hashmap.get_val(i)[5] and truck_number == 1:
                             shortest_value = get_current_distance(num, current_location)
@@ -69,3 +76,7 @@ def get_current_distance(row, column):
     if distances[row][column] == '':
         current_distance = distances[column][row]
     return float(current_distance)
+
+# Calculates time of delivery for a package
+def calculate_time(distance, list):
+    pass

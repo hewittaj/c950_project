@@ -65,6 +65,6 @@ class HashMap:
         hash_key = self.create_hash(key)
         if self.map[hash_key] is not None:
             for item in self.map[hash_key]:
-                if item[0] == key:
+                if int(item[0]) == key:
                     item[1] = value
                     return True
