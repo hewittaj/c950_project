@@ -77,6 +77,31 @@ def get_current_distance(row, column):
         current_distance = distances[column][row]
     return float(current_distance)
 
+
+# Get the total distance of a truck's route
+def get_total_distance(truck_list):
+    # Length of our trucks list
+    list_length = len(truck_list)
+    list_of_indexes = []
+    total_distance = 0.0
+
+    # Loop through the length of our list of trucks and find the indexes
+    for num in range(list_length):
+        # Loop through our items in our .csv file
+        for item in distance_with_names:
+            # If it matches then append the index number to our list
+            if item[2] == truck_list[num][1]:
+                list_of_indexes.append(item[0])
+
+    for num in range(len(list_of_indexes)):
+        if num == list_length - 1:
+            continue
+        print(get_current_distance(int(list_of_indexes[num]), int(list_of_indexes[num + 1])))
+
+    print(list_of_indexes)
+
+
 # Calculates time of delivery for a package
 def calculate_time(distance, list):
+
     pass

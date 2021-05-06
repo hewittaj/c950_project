@@ -64,6 +64,11 @@ while len(truck3) < 16:
     # Update the next starting point
     starting_point = distance_info[2]
 
+truck1.insert(0, ['0', '4001 South 700 East'])  # Insert 0 as they all start at the hub
+truck2.insert(0, ['0', '4001 South 700 East'])  # Insert 0 as they all start at the hub
+truck3.insert(0, ['0', '4001 South 700 East'])  # Insert 0 as they all start at the hub
+d.get_total_distance(truck1)
+
 
 
 print(truck1)
@@ -71,5 +76,3 @@ print(len(truck1))
 print(truck2)
 print(len(truck2))
 print(truck3)
-for num in range(1,41):
-    print(package_hashmap.get_val(num))
