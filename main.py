@@ -41,7 +41,7 @@ while len(truck2) < 16:
 
     # If is an earlier delivery we want to get that first
     if '9:00' in distance_info[4]:
-        truck2.insert(1, package_hashmap.get_val(distance_info[3]))
+        truck2.insert(0, package_hashmap.get_val(distance_info[3]))
     if '10:30' in distance_info[4]:
         truck2.insert(2, package_hashmap.get_val(distance_info[3]))
     else:

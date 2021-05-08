@@ -58,6 +58,15 @@ def get_next_shortest(current_location, hashmap, skipped_list, truck_number):
                             # Most important packages so we add to first truck if possible
                             return shortest_value, current_location, shortest_value_index, package_id, time
 
+                        if '9:00' in hashmap.get_val(i)[5] and truck_number == 2:
+                            shortest_value = get_current_distance(num, current_location)
+                            shortest_value_index = num
+                            package_id = i
+                            time = hashmap.get_val(i)[5]
+
+                            # Most important packages so we add to first truck if possible
+                            return shortest_value, current_location, shortest_value_index, package_id, time
+
                         shortest_value = get_current_distance(num, current_location)
                         shortest_value_index = num
                         package_id = i
@@ -102,7 +111,7 @@ def get_total_distance(truck_list):
                     list_of_indexes.append(item[0])
 
         for i in range(len(list_of_indexes)):  # TO DO NEED TO CHECK ALL DISTANCES ARE CORRECT
-            # ALSO NEED TO CHECK THAT ALL INDEXES GET HIT
+            # If there is an empty spot on a truck we skip it
             if list_of_indexes[i] is None:
                 continue
             if i == list_length - 1:
@@ -118,5 +127,5 @@ def get_total_distance(truck_list):
 
 
 # Calculates time of delivery for a package
-def calculate_time(distance, list):
+def calculate_time(distance, truck_list):
     pass
