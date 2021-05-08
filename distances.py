@@ -54,26 +54,25 @@ def get_total_distance(truck_list):
         for num in range(list_length):
             # Loop through our items in our .csv file
             for item in distance_with_names:
-
-                if truck_list[num][1] is None:
-                    continue
                 # If it matches then append the index number to our list
                 if item[2] == truck_list[num][1]:
                     list_of_indexes.append(item[0])
+                    break
     except TypeError:
         pass
 
     try:
         for i in range(len(list_of_indexes)):
             # If there is an empty spot on a truck we skip it
-            if list_of_indexes[i] is None:
-                continue
             if i == list_length - 1:
-                list_of_distances.append(get_current_distance(int(list_of_indexes[i - 1]), int(list_of_indexes[i])))
-                total_distance += get_current_distance(int(list_of_indexes[i - 1]), int(list_of_indexes[i]))
+                # list_of_distances.append(get_current_distance(int(list_of_indexes[i - 1]), int(list_of_indexes[i])))
+                # total_distance += get_current_distance(int(list_of_indexes[i - 1]), int(list_of_indexes[i]))
                 continue
-            list_of_distances.append(get_current_distance(int(list_of_indexes[i - 1]), int(list_of_indexes[i])))
-            total_distance += get_current_distance(int(list_of_indexes[i]), int(list_of_indexes[i + 1]))
+
+            else:
+                list_of_distances.append(get_current_distance(0, int(list_of_indexes[i + 1])))
+                total_distance += get_current_distance(int(list_of_indexes[i]), int(list_of_indexes[i + 1]))
+
     except IndexError:
         pass
     print(f"List of Distances{list_of_distances}")
