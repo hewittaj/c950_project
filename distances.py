@@ -10,43 +10,28 @@ with open("./resources/distance_table_with_names.csv", "r", encoding='utf-8-sig'
 
 
 # This determines the next shortest route to deliver to
-def get_greedy_route(list_of_packages_on_truck):
+def get_greedy_route(list_of_packages_on_truck, updated_greedy_route):
     shortest_value = 100.0  # Starting minimum value to compare against
-    shortest_package_id = 0  # Id of shortest package
-    shortest_package_index = 0  # Index of shortest package
-    greedy_route = {}  # Route that will be taken by using the greedy algorithm starting from hub i.e zero
-    first_cycle = True  # Keeps track if it is the first time through so we don't assign 0 as shortest value
-    length_of_packages = len(list_of_packages_on_truck)
-    temp_distance = 0.0  # Temp distance that we use for assigning to shortest_value, constantly moving
+    index_of_shortest_value = 0  # Index of shortest value found matched against distance_table_with_names
+    package_id_of_shortest = 0
+    prior_index = 0  # Starting index of previous package
 
-    for item in list_of_packages_on_truck:  # Cycle through packages on truck
-        for distance in distance_with_names:
-            if item[1] == distance[2]:  # If the items address matches the address in our .csv
-                if first_cycle:  # Starting from hub
-                    temp_distance = get_current_distance(0, int(distance[0]))
-                    if temp_distance <= shortest_value:
-                        shortest_value = temp_distance
-                        shortest_package_id = int(item[0])
-                        shortest_package_index = int(distance[0])
-                        continue
-                else:
-                    values = greedy_route.values()
-                    updated = list(values)
-                    temp_distance = get_current_distance(updated[1], int(distance[0]))
-                    if temp_distance <= shortest_value:
-                        shortest_value = temp_distance
-                        shortest_package_id = int(item[0])
-                        shortest_package_index = int(distance[0])
-                        continue
-        first_cycle = False
+    # Get the previous packages index
+    for distance in distance_with_names:
+        test = updated_greedy_route[-1]
+        if updated_greedy_route[-1][1] == distance[2]:
+            prior_index = int(distance[0])
 
-        for i in range(length_of_packages - 1):  # Pop package info and append to route
-            if int(list_of_packages_on_truck[i][0]) == shortest_package_id:
-                greedy_route.update({"package_id": shortest_package_id})
-                greedy_route.update({"index": shortest_package_index})
-                greedy_route.update({"package_info": list_of_packages_on_truck.pop(i)}) # Pop package info and append to route
+    # Find shortest route for next delivery
+    for package in list_of_packages_on_truck:
+        for index in distance_with_names:
+            if package[1] == index[2]:  # Matched addresses
+                if get_current_distance(prior_index, int(index[0])) <= shortest_value:
+                    shortest_value = get_current_distance(prior_index, int(index[0]))
+                    index_of_shortest_value = int(index[0])
+                    package_id_of_shortest = int(package[0])
 
-    return greedy_route
+    return shortest_value, index_of_shortest_value, package_id_of_shortest
 
 
 # Get the current distance using the row and column passed.
