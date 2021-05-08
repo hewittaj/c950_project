@@ -10,78 +10,43 @@ with open("./resources/distance_table_with_names.csv", "r", encoding='utf-8-sig'
 
 
 # This determines the next shortest route to deliver to
-def get_next_shortest(current_location, hashmap, skipped_list, truck_number):
+def get_greedy_route(list_of_packages_on_truck):
     shortest_value = 100.0  # Starting minimum value to compare against
-    shortest_value_index = 0  # Index of our next package to deliver to, with the shortest distance
-    num = 0  # Our number we iterate to compare against all the indexes that are from that location
-    size = len(distances)  # Size of the distance map
-    global package_id
+    shortest_package_id = 0  # Id of shortest package
+    shortest_package_index = 0  # Index of shortest package
+    greedy_route = {}  # Route that will be taken by using the greedy algorithm starting from hub i.e zero
+    first_cycle = True  # Keeps track if it is the first time through so we don't assign 0 as shortest value
+    length_of_packages = len(list_of_packages_on_truck)
+    temp_distance = 0.0  # Temp distance that we use for assigning to shortest_value, constantly moving
 
-    # While the number is less than the size of the distances table, loop through and get distances
-    while num < size:
+    for item in list_of_packages_on_truck:  # Cycle through packages on truck
+        for distance in distance_with_names:
+            if item[1] == distance[2]:  # If the items address matches the address in our .csv
+                if first_cycle:  # Starting from hub
+                    temp_distance = get_current_distance(0, int(distance[0]))
+                    if temp_distance <= shortest_value:
+                        shortest_value = temp_distance
+                        shortest_package_id = int(item[0])
+                        shortest_package_index = int(distance[0])
+                        continue
+                else:
+                    values = greedy_route.values()
+                    updated = list(values)
+                    temp_distance = get_current_distance(updated[1], int(distance[0]))
+                    if temp_distance <= shortest_value:
+                        shortest_value = temp_distance
+                        shortest_package_id = int(item[0])
+                        shortest_package_index = int(distance[0])
+                        continue
+        first_cycle = False
 
-        # If the current distance is less than or equal to our shortest value we update
-        if get_current_distance(num, current_location) <= shortest_value:
-            # Loop through the hashmap of packages
-            for i in range(1, 41):
-                # If the number is in our skip list, we don't want to search the hashmap for that value
-                # since it has been removed.
-                if i in skipped_list:
-                    continue
-                try:
-                    # If the hashmap at the index matches the distance w/ names table assign these values
-                    if hashmap.get_val(i)[1] == distance_with_names[num][2]:
-                        if 'Can only be' in hashmap.get_val(i)[7] and truck_number == 2:
-                            shortest_value = get_current_distance(num, current_location)
-                            shortest_value_index = num
-                            package_id = i
-                            time = hashmap.get_val(i)[5]
+        for i in range(length_of_packages - 1):  # Pop package info and append to route
+            if int(list_of_packages_on_truck[i][0]) == shortest_package_id:
+                greedy_route.update({"package_id": shortest_package_id})
+                greedy_route.update({"index": shortest_package_index})
+                greedy_route.update({"package_info": list_of_packages_on_truck.pop(i)}) # Pop package info and append to route
 
-                            # Most important packages so we add to first truck if possible
-                            return shortest_value, current_location, shortest_value_index, package_id, time
-
-                        if 'Delayed' in hashmap.get_val(i)[7] and truck_number != 3:
-                            continue
-
-                        if 'Wrong address' in hashmap.get_val(i)[7] and truck_number != 3:
-                            updated = ['9', '410 S State St', 'Salt Lake City', 'UT', '84111', 'EOD', '2',
-                                       'Wrong address listed', 'at the hub']
-                            hashmap.update(i, updated)
-                            continue
-
-                        if '10:30' in hashmap.get_val(i)[5] or '9:00' in hashmap.get_val(i)[5] and truck_number == 1:
-                            shortest_value = get_current_distance(num, current_location)
-                            shortest_value_index = num
-                            package_id = i
-                            time = hashmap.get_val(i)[5]
-
-                            # Most important packages so we add to first truck if possible
-                            return shortest_value, current_location, shortest_value_index, package_id, time
-
-                        if '9:00' in hashmap.get_val(i)[5] and truck_number == 2:
-                            shortest_value = get_current_distance(num, current_location)
-                            shortest_value_index = num
-                            package_id = i
-                            time = hashmap.get_val(i)[5]
-
-                            # Most important packages so we add to first truck if possible
-                            return shortest_value, current_location, shortest_value_index, package_id, time
-
-                        shortest_value = get_current_distance(num, current_location)
-                        shortest_value_index = num
-                        package_id = i
-                    continue
-
-                except TypeError:  # Excepts if there is a None value in our hashmap
-                    pass
-            num += 1
-        # Catch all, will continue in the loop
-        else:
-            num += 1
-            continue
-    time = ''  # Needed so we don't get index out of range
-    # Return the shortest value, current location index, and shortest value index
-    return shortest_value, current_location, shortest_value_index, package_id, time
+    return greedy_route
 
 
 # Get the current distance using the row and column passed.
@@ -97,6 +62,7 @@ def get_total_distance(truck_list):
     # Length of our trucks list
     list_length = len(truck_list)
     list_of_indexes = []
+    list_of_distances = []
     total_distance = 0.0
     try:
         # Loop through the length of our list of trucks and find the indexes
@@ -109,20 +75,23 @@ def get_total_distance(truck_list):
                 # If it matches then append the index number to our list
                 if item[2] == truck_list[num][1]:
                     list_of_indexes.append(item[0])
+    except TypeError:
+        pass
 
-        for i in range(len(list_of_indexes)):  # TO DO NEED TO CHECK ALL DISTANCES ARE CORRECT
+    try:
+        for i in range(len(list_of_indexes)):
             # If there is an empty spot on a truck we skip it
             if list_of_indexes[i] is None:
                 continue
             if i == list_length - 1:
+                list_of_distances.append(get_current_distance(int(list_of_indexes[i - 1]), int(list_of_indexes[i])))
                 total_distance += get_current_distance(int(list_of_indexes[i - 1]), int(list_of_indexes[i]))
                 continue
+            list_of_distances.append(get_current_distance(int(list_of_indexes[i - 1]), int(list_of_indexes[i])))
             total_distance += get_current_distance(int(list_of_indexes[i]), int(list_of_indexes[i + 1]))
-            # print(get_current_distance(int(list_of_indexes[i]), int(list_of_indexes[i + 1])))
-    except TypeError:
+    except IndexError:
         pass
-
-    # print(list_of_indexes)
+    print(f"List of Distances{list_of_distances}")
     return total_distance
 
 
