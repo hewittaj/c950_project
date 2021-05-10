@@ -18,9 +18,10 @@ def get_greedy_route(list_of_packages_on_truck, updated_greedy_route):
 
     # Get the previous packages index
     for distance in distance_with_names:
-        test = updated_greedy_route[-1]
+        test = updated_greedy_route[-1]  # TO DO DELETE
         if updated_greedy_route[-1][1] == distance[2]:
             prior_index = int(distance[0])
+            break  # Can break loop as it shouldn't match anything else
 
     # Find shortest route for next delivery
     for package in list_of_packages_on_truck:
@@ -30,6 +31,10 @@ def get_greedy_route(list_of_packages_on_truck, updated_greedy_route):
                     shortest_value = get_current_distance(prior_index, int(index[0]))
                     index_of_shortest_value = int(index[0])
                     package_id_of_shortest = int(package[0])
+                    break
+
+                else:  # If it matches it won't match any more so we can break and continue to next package
+                    break
 
     return shortest_value, index_of_shortest_value, package_id_of_shortest
 
@@ -63,14 +68,16 @@ def get_total_distance(truck_list):
 
     try:
         for i in range(len(list_of_indexes)):
-            # If there is an empty spot on a truck we skip it
+            # If we are at the hub
+            if list_of_indexes[i] == 0:
+                list_of_distances.append(get_current_distance(0, int(list_of_indexes[i + 1])))
+                total_distance += get_current_distance(int(list_of_indexes[i]), int(list_of_indexes[i + 1]))
+
             if i == list_length - 1:
-                # list_of_distances.append(get_current_distance(int(list_of_indexes[i - 1]), int(list_of_indexes[i])))
-                # total_distance += get_current_distance(int(list_of_indexes[i - 1]), int(list_of_indexes[i]))
                 continue
 
             else:
-                list_of_distances.append(get_current_distance(0, int(list_of_indexes[i + 1])))
+                list_of_distances.append(get_current_distance(int(list_of_indexes[i]), int(list_of_indexes[i + 1])))
                 total_distance += get_current_distance(int(list_of_indexes[i]), int(list_of_indexes[i + 1]))
 
     except IndexError:
