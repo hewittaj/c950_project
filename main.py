@@ -22,10 +22,10 @@ starting_point = 0  # Starting point is the hub i.e. index 0
 total_distance = 0.0  # Sum of all the distances a truck traveled
 
 # Manually load some packages
-be_together = [13, 14, 15, 16, 19, 20, 1, 28, 29, 30, 34, 39]  # Packages that must be delivered together on truck one
+be_together = [13, 14, 15, 16, 19, 20, 1, 29, 30, 34, 39]  # Packages that must be delivered together on truck one
 only_truck_two = [3, 18, 35, 37, 38, 27, 31, 33, 36, 40]  # Packages that can only be on truck two
 delayed = [6, 25, 28, 32]  # Packages that are delayed and won't arrive until 9:05 go to truck two
-no_special_needs = [2, 4, 5, 7, 8, 9, 10, 11, 12, 17, 19, 21, 22, 23, 24, 26]  # Packages that don't have special needs
+no_special_needs = [2, 4, 5, 7, 8, 9, 10, 11, 12, 17, 21, 22, 23, 24, 26]  # Packages that don't have special needs
 
 # Manually sort packages
 for i in range(1, 41):
@@ -35,17 +35,17 @@ for i in range(1, 41):
     # Load packages that have to be delivered together on truck 1
     if int(package_info[0]) in be_together:
         truck1.append(package_info)
-        truck1[-1][10] = '8:00'
+        truck1[-1][10] = '8:00:00'
 
     # Load packages that can only be on truck two
     if int(package_info[0]) in only_truck_two:
         truck2.append(package_info)
-        truck2[-1][10] = '9:05'
+        truck2[-1][10] = '9:05:00'
 
     # Load packages that are delayed to truck two
     if int(package_info[0]) in delayed:
         truck2.append(package_info)
-        truck2[-1][10] = '9:05'
+        truck2[-1][10] = '9:05:00'
 
     # Load packages with no special needs to truck 3. Will be full after this
     if int(package_info[0]) in no_special_needs:
@@ -57,13 +57,13 @@ for i in range(1, 41):
             package_info[3] = 'UT'
             package_info[4] = '84111'
         truck3.append(package_info)
-        truck3[-1][10] = '8:00'
+        truck3[-1][10] = '8:00:00'
 
 
 # Insert 0 as they all start at the hub
-greedy_route_truck1.insert(0, ['0', '4001 South 700 East', '', '', '', '', '', '', '', '', '8:00'])
-greedy_route_truck2.insert(0, ['0', '4001 South 700 East', '', '', '', '', '', '', '', '', '9:05'])
-greedy_route_truck3.insert(0, ['0', '4001 South 700 East', '', '', '', '', '', '', '', '', '8:00'])
+greedy_route_truck1.insert(0, ['0', '4001 South 700 East', '', '', '', '', '', '', '', '', '8:00:00'])
+greedy_route_truck2.insert(0, ['0', '4001 South 700 East', '', '', '', '', '', '', '', '', '9:05:00'])
+greedy_route_truck3.insert(0, ['0', '4001 South 700 East', '', '', '', '', '', '', '', '', '8:00:00'])
 
 while truck1:
     distance_info = d.get_greedy_route(truck1, greedy_route_truck1)  # Get distance info for the next truck
@@ -73,10 +73,13 @@ while truck1:
 
     # If the last package has gone out, then we need to return to the hub
     if len(truck1) == 0:
-        truck1.append(['0', '4001 South 700 East', '', '', '', '', '', '', '', '', '8:00'])  # Set truck to return to hub
+        # Set truck to return to hub
+        truck1.append(['0', '4001 South 700 East', '', '', '', '', '', '', '', '', '8:00:00'])
         distance_info = d.get_greedy_route(truck1, greedy_route_truck1)  # Get distance info for the next truck
         truck1_distance_info.append(distance_info)  # Append to our list for our later time calculations
-        greedy_route_truck1.append(['0', '4001 South 700 East', '', '', '', '', '', '', '', '', '8:00'])  # Add package to greedy_route
+
+        # Add package to greedy_route
+        greedy_route_truck1.append(['0', '4001 South 700 East', '', '', '', '', '', '', '', '', '8:00:00'])
         break  # Done with this loop
 distance_info = []  # Clear out info
 
@@ -99,7 +102,15 @@ total_distance = d.get_total_distance(greedy_route_truck1) + \
                  d.get_total_distance(greedy_route_truck3)
 print(f"Total Distance: {total_distance:0.2f} miles.")
 
-t.calculate_time(truck1_distance_info, greedy_route_truck1)  # TO DO DELETE
+# Calculate Delivery times for each truck
+t.calculate_time(truck1_distance_info, greedy_route_truck1)
+
+# Set new start time for truck 3 to be when truck 1 gets back
+truck1_finish_time = greedy_route_truck1[len(greedy_route_truck1)-1][-2]
+for package in greedy_route_truck3:
+    package[-1] = truck1_finish_time
+t.calculate_time(truck2_distance_info, greedy_route_truck2)
+t.calculate_time(truck3_distance_info, greedy_route_truck3)
 
 print(greedy_route_truck1)
 print(greedy_route_truck2)
