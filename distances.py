@@ -1,5 +1,4 @@
 import csv
-import datetime
 
 # Open and read in package_csv files as a list so we can work with the data
 with open("./resources/distance_table.csv", "r", encoding='utf-8-sig') as distance_table:
@@ -82,7 +81,6 @@ def get_total_distance(truck_list):
 
     except IndexError:
         pass
-    print(f"List of Distances{list_of_distances}")
     return total_distance
 
 

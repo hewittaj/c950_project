@@ -1,5 +1,5 @@
 # Alex Hewitt student ID 001346462
-from hashmap import HashMap
+import datetime
 import import_packages_csv as package_csv
 import distances as d
 import time_calculations as t
@@ -96,22 +96,65 @@ while truck3:
     greedy_route_truck3.append(package_hashmap.get_val(distance_info[2]))  # Add package to greedy_route
     truck3.remove(package_hashmap.get_val(distance_info[2]))  # Remove package from truck
 
-# Get the total distance of each truck
-total_distance = d.get_total_distance(greedy_route_truck1) + \
-                 d.get_total_distance(greedy_route_truck2) + \
-                 d.get_total_distance(greedy_route_truck3)
-print(f"Total Distance: {total_distance:0.2f} miles.")
-
-# Calculate Delivery times for each truck
+# Calculate delivery times for truck one
 t.calculate_time(truck1_distance_info, greedy_route_truck1)
 
 # Set new start time for truck 3 to be when truck 1 gets back
 truck1_finish_time = greedy_route_truck1[len(greedy_route_truck1)-1][-2]
 for package in greedy_route_truck3:
     package[-1] = truck1_finish_time
+
+# Calculate delivery times for remaining trucks
 t.calculate_time(truck2_distance_info, greedy_route_truck2)
 t.calculate_time(truck3_distance_info, greedy_route_truck3)
 
-print(greedy_route_truck1)
-print(greedy_route_truck2)
-print(greedy_route_truck3)
+
+# This begins the section of the user interface
+print("***************************************************")
+print("* Welcome to the package delivery system for WGU! *")
+print("***************************************************\n")
+
+# Get the total distance of the routes taken and print to the screen
+total_distance = d.get_total_distance(greedy_route_truck1) + \
+                 d.get_total_distance(greedy_route_truck2) + \
+                 d.get_total_distance(greedy_route_truck3)
+print(f"The distance required to deliver all packages was: {total_distance:0.2f} miles.\n")
+
+# Ask user what they would like to do
+print("Please enter '1' to get the status of a package at a particular time.\n"
+      "Please enter '2' to get the status of all packages at a particular time."
+      "Or alternatively enter 'quit' to quit the program.")
+
+# Store the user response
+answer = input("Response: ")
+my_boolean = True  # Boolean used to continuously loop until we designate it to be false
+while my_boolean:
+    # Get status of a particular package choice
+    if answer == '1':
+        selected_package = int(input("Please enter the package id you would like to inspect: "))  # Get package id
+        selected_time = datetime.timedelta()  # Create time delta
+        time = input("Please enter time you would like to search for in the format "
+                     "'HH:MM:SS': ")
+
+        answer = input("Please give another package you would like to search for or type 'quit': ")
+        if answer != 'quit':
+            pass
+        else:
+            print("\nGoodbye!")
+            my_boolean = False
+
+    # Get status of all packages selection
+    elif answer == '2':
+
+        answer = input("Please give another package you would like to search for or type 'quit': ")
+        if answer != 'quit':
+            pass
+        else:
+            print("\nGoodbye!")
+            my_boolean = False
+    elif answer == 'quit':
+        print("\nGoodbye!")
+        break
+    else:
+        print("\nInvalid response, try again: ")
+        answer = input()
