@@ -1,7 +1,6 @@
 # Alex Hewitt student ID 001346462
 import datetime
-import itertools
-
+from operator import itemgetter
 import import_packages_csv as package_csv
 import distances as d
 import time_calculations as t
@@ -61,7 +60,6 @@ for i in range(1, 41):
         truck3.append(package_info)
         truck3[-1][10] = '8:00:00'
 
-
 # Insert 0 as they all start at the hub
 greedy_route_truck1.insert(0, ['0', '4001 South 700 East', '', '', '', '', '', '', '', '', '8:00:00'])
 greedy_route_truck2.insert(0, ['0', '4001 South 700 East', '', '', '', '', '', '', '', '', '9:05:00'])
@@ -102,7 +100,7 @@ while truck3:
 t.calculate_time(truck1_distance_info, greedy_route_truck1)
 
 # Set new start time for truck 3 to be when truck 1 gets back
-truck1_finish_time = greedy_route_truck1[len(greedy_route_truck1)-1][-2]
+truck1_finish_time = greedy_route_truck1[len(greedy_route_truck1) - 1][-2]
 for package in greedy_route_truck3:
     package[-1] = truck1_finish_time
 
@@ -110,6 +108,25 @@ for package in greedy_route_truck3:
 t.calculate_time(truck2_distance_info, greedy_route_truck2)
 t.calculate_time(truck3_distance_info, greedy_route_truck3)
 
+# Create a list of all the updated info for all packages
+all_packages_updated = []
+for package in greedy_route_truck1:
+    if package[0] == '0':  # Don't add hub to packages
+        continue
+    package[0] = int(package[0])
+    all_packages_updated.append(package)
+
+for package in greedy_route_truck2:
+    if package[0] == '0':  # Don't add hub to packages
+        continue
+    package[0] = int(package[0])
+    all_packages_updated.append(package)
+
+for package in greedy_route_truck3:
+    if package[0] == '0':  # Don't add hub to packages
+        continue
+    package[0] = int(package[0])
+    all_packages_updated.append(package)
 
 # This begins the section of the user interface
 print("***************************************************")
@@ -124,11 +141,11 @@ print(f"The distance required to deliver all packages was: {total_distance:0.2f}
 
 # Ask user what they would like to do
 print("Please enter '1' to get the status of a package at a particular time.\n"
-      "Please enter '2' to get the status of all packages at a particular time."
+      "Please enter '2' to get the status of all packages at a particular time.\n"
       "Or alternatively enter 'quit' to quit the program.")
 
 # Store the user response
-answer = input("Response: ")
+answer = input("Response: \n")
 
 # Boolean used to continuously loop until we designate it to be false
 my_boolean = True
@@ -150,8 +167,8 @@ while my_boolean:
         delivery_time = datetime.timedelta()
         start_time = datetime.timedelta()
 
-        # Loop through trucks
-        for package in greedy_route_truck1:
+        # Loop through packages
+        for package in all_packages_updated:
             # If the package the user selected is on truck one do the following
             if int(package[0]) == selected_package:
                 (package_hour, package_minute, package_second) = package[9].split(":")
@@ -162,89 +179,78 @@ while my_boolean:
                 start_time = datetime.timedelta(hours=int(start_hour), minutes=int(start_minute),
                                                 seconds=int(start_second))
                 if selected_time <= start_time:
-                    print(f"Package {package[0]}: is at the hub")
+                    print(f"\nPackage {package[0]}: is at the hub")
                     was_found = True
                     break
                 if start_time <= selected_time <= delivery_time:
-                    print(f"Package {package[0]}: is en route")
+                    print(f"\nPackage {package[0]}: is en route")
                     was_found = True
                     break
                 if selected_time >= delivery_time:
                     was_found = True
-                    print(f"Package {package[0]}: is delivered")
+                    print(f"\nPackage {package[0]}: is delivered")
                     break
             else:
                 continue
-
-        for package in greedy_route_truck2:
-            # If the package the user selected is on truck one do the following
-            if int(package[0]) == selected_package:
-                (package_hour, package_minute, package_second) = package[9].split(":")
-                delivery_time = datetime.timedelta(hours=int(package_hour), minutes=int(package_minute),
-                                                   seconds=int(package_second))
-
-                (start_hour, start_minute, start_second) = package[10].split(":")
-                start_time = datetime.timedelta(hours=int(start_hour), minutes=int(start_minute),
-                                                seconds=int(start_second))
-                if selected_time <= start_time:
-                    print(f"Package {package[0]}: is at the hub")
-                    was_found = True
-                    break
-                if start_time <= selected_time <= delivery_time:
-                    print(f"Package {package[0]}: is en route")
-                    was_found = True
-                    break
-                if selected_time >= delivery_time:
-                    was_found = True
-                    print(f"Package {package[0]}: is delivered")
-                    break
-            else:
-                continue
-
-        for package in greedy_route_truck3:
-            # If the package the user selected is on truck one do the following
-            if int(package[0]) == selected_package:
-                (package_hour, package_minute, package_second) = package[9].split(":")
-                delivery_time = datetime.timedelta(hours=int(package_hour), minutes=int(package_minute),
-                                                   seconds=int(package_second))
-
-                (start_hour, start_minute, start_second) = package[10].split(":")
-                start_time = datetime.timedelta(hours=int(start_hour), minutes=int(start_minute),
-                                                seconds=int(start_second))
-                if selected_time <= start_time:
-                    print(f"Package {package[0]}: is at the hub")
-                    was_found = True
-                    break
-                if start_time <= selected_time <= delivery_time:
-                    print(f"Package {package[0]}: is en route")
-                    was_found = True
-                    break
-                if selected_time >= delivery_time:
-                    was_found = True
-                    print(f"Package {package[0]}: is delivered")
-                    break
-            else:
-                continue
-
-        answer = input("Please give another package you would like to search for or type 'quit': ")
-        if answer != 'quit':
-            pass
-        else:
+        search_again = input("Would you like to search for another package? Enter 'y' or 'n': ")
+        if search_again == 'y':
+            answer = '1'
+            continue
+        if search_again == 'n':
             print("\nGoodbye!")
-            my_boolean = False
+            break
 
     # Get status of all packages selection
     elif answer == '2':
+        # Time the user would like to check the status of all packages
+        time = input("Please enter the time to check the status of all packages in the format "
+                     "'HH:MM:SS': ")
 
-        answer = input("Please give another package you would like to search for or type 'quit': ")
-        if answer != 'quit':
-            pass
-        else:
-            print("\nGoodbye!")
-            my_boolean = False
+        # Create time delta for the user's selected time
+        selected_time = datetime.timedelta()
+
+        # Split the time so we can work with it
+        (hour, minute, second) = time.split(":")
+        selected_time = datetime.timedelta(hours=int(hour), minutes=int(minute), seconds=int(second))
+
+        # Get time that package will be delivered and when it can start to be delivered
+        delivery_time = datetime.timedelta()
+        start_time = datetime.timedelta()
+
+        # Loop through packages
+        all_packages_updated = sorted(all_packages_updated, key=itemgetter(0))
+        for num in range(len(all_packages_updated)):
+
+            # If the package the user selected is on truck one do the following
+            (package_hour, package_minute, package_second) = all_packages_updated[num][9].split(":")
+            delivery_time = datetime.timedelta(hours=int(package_hour), minutes=int(package_minute),
+                                               seconds=int(package_second))
+
+            (start_hour, start_minute, start_second) = all_packages_updated[num][10].split(":")
+            start_time = datetime.timedelta(hours=int(start_hour), minutes=int(start_minute),
+                                            seconds=int(start_second))
+            if selected_time <= start_time:
+                print(f"\nPackage {all_packages_updated[num][0]}: is at the hub")
+                was_found = True
+                continue
+            if start_time <= selected_time <= delivery_time:
+                print(f"\nPackage {all_packages_updated[num][0]}: is en route")
+                was_found = True
+                continue
+            if selected_time >= delivery_time:
+                was_found = True
+                print(f"\nPackage {all_packages_updated[num][0]}: is delivered")
+                continue
+
+        print("\nGoodbye!")
+        break
+
+    # If user immediately types quit
     elif answer == 'quit':
         print("\nGoodbye!")
         break
+
+    # Otherwise it is an invalid format/response
     else:
         print("\nInvalid response, try again: ")
         answer = input()
