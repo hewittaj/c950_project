@@ -19,10 +19,13 @@ with open("./resources/package_info.csv", 'r', encoding='utf-8-sig') as p:
         package_deadline = row[5]
         package_weight = row[6]
         package_notes = row[7]
-        delivery_status = 'at the hub'
+        delivery_status = 'at the hub'  # Tells where the package is currently at
+        delivery_time = ''  # States when the package was delivered
+        start_time = ''  # States when package can start to be delivered
 
         all_values = [package_id, package_address, package_city,  # Create a list of values to store in hash map
-                      package_state, package_zip, package_deadline, package_weight, package_notes, delivery_status]
+                      package_state, package_zip, package_deadline, package_weight, package_notes, delivery_status,
+                      delivery_time, start_time]
         hash_map.insert(package_id, all_values)  # Insert into hash_map,
 
     # Get all of the packages in our hashmap
