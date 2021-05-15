@@ -22,13 +22,13 @@ truck3_distance_info = []
 starting_point = 0  # Starting point is the hub i.e. index 0
 total_distance = 0.0  # Sum of all the distances a truck traveled
 
-# Manually load some packages
+# Manually load the packages
 be_together = [13, 14, 15, 16, 19, 20, 1, 29, 30, 34, 39]  # Packages that must be delivered together on truck one
 only_truck_two = [3, 18, 35, 37, 38, 27, 31, 33, 36, 40]  # Packages that can only be on truck two
 delayed = [6, 25, 28, 32]  # Packages that are delayed and won't arrive until 9:05 go to truck two
 no_special_needs = [2, 4, 5, 7, 8, 9, 10, 11, 12, 17, 21, 22, 23, 24, 26]  # Packages that don't have special needs
 
-# Manually sort packages
+# Manually sort packages this has O(1) time, but could be O(n) based on the amount of packages
 for i in range(1, 41):
     # Get package info
     package_info = package_hashmap.get_val(i)
@@ -65,6 +65,7 @@ greedy_route_truck1.insert(0, ['0', '4001 South 700 East', '', '', '', '', '', '
 greedy_route_truck2.insert(0, ['0', '4001 South 700 East', '', '', '', '', '', '', '', '', '9:05:00'])
 greedy_route_truck3.insert(0, ['0', '4001 South 700 East', '', '', '', '', '', '', '', '', '8:00:00'])
 
+# O(n^3) time as the while loop calls the d.get_greedy_route which is O(n^2)
 while truck1:
     distance_info = d.get_greedy_route(truck1, greedy_route_truck1)  # Get distance info for the next truck
     truck1_distance_info.append(distance_info)  # Append to our list for our later time calculations
@@ -83,6 +84,7 @@ while truck1:
         break  # Done with this loop
 distance_info = []  # Clear out info
 
+# O(n^3) time as the while loop calls the d.get_greedy_route which is O(n^2)
 while truck2:
     distance_info = d.get_greedy_route(truck2, greedy_route_truck2)  # Get distance info for the next truck
     truck2_distance_info.append(distance_info)  # Append to our list for our later time calculations
@@ -90,6 +92,7 @@ while truck2:
     truck2.remove(package_hashmap.get_val(distance_info[2]))  # Remove package from truck
 distance_info = []  # Clear out info
 
+# O(n^3) time as the while loop calls the d.get_greedy_route which is O(n^2)
 while truck3:
     distance_info = d.get_greedy_route(truck3, greedy_route_truck3)  # Get distance info for the next truck
     truck3_distance_info.append(distance_info)  # Append to our list for our later time calculations
@@ -167,7 +170,7 @@ while my_boolean:
         delivery_time = datetime.timedelta()
         start_time = datetime.timedelta()
 
-        # Loop through packages
+        # Loop through packages, O(n) time
         for package in all_packages_updated:
             # If the package the user selected is on truck one do the following
             if int(package[0]) == selected_package:
@@ -192,7 +195,9 @@ while my_boolean:
                     break
             else:
                 continue
+
         search_again = input("Would you like to search for another package? Enter 'y' or 'n': ")
+
         if search_again == 'y':
             answer = '1'
             continue
@@ -217,7 +222,7 @@ while my_boolean:
         delivery_time = datetime.timedelta()
         start_time = datetime.timedelta()
 
-        # Loop through packages
+        # Loop through packages, O(n) time
         all_packages_updated = sorted(all_packages_updated, key=itemgetter(0))
         for num in range(len(all_packages_updated)):
 

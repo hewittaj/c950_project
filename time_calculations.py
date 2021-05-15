@@ -1,7 +1,11 @@
 import datetime
 
+"""
+Calculate the time needed for each delivery on a truck.
+This has O(n) time as it loops through the distance information received or 'n' amounts of information
+"""
 
-# Calculate the time needed for each delivery on a truck
+
 def calculate_time(distance_info, truck_list):
     count = 0
     delivery_time = datetime.timedelta()

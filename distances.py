@@ -8,21 +8,21 @@ with open("./resources/distance_table_with_names.csv", "r", encoding='utf-8-sig'
     distance_with_names = list(csv.reader(distance_table_names, delimiter=","))
 
 
-# This determines the next shortest route to deliver to
+# This determines the next shortest route to deliver to.
+# This has O(n^2) time
 def get_greedy_route(list_of_packages_on_truck, updated_greedy_route):
     shortest_value = 100.0  # Starting minimum value to compare against
     index_of_shortest_value = 0  # Index of shortest value found matched against distance_table_with_names
-    package_id_of_shortest = 0
+    package_id_of_shortest = 0  # Id of the package with the shortest distance
     prior_index = 0  # Starting index of previous package
 
-    # Get the previous packages index
+    # Get the previous packages index. O(n)
     for distance in distance_with_names:
-        test = updated_greedy_route[-1]  # TO DO DELETE
         if updated_greedy_route[-1][1] == distance[2]:
             prior_index = int(distance[0])
             break  # Can break loop as it shouldn't match anything else
 
-    # Find shortest route for next delivery
+    # Find shortest route for next delivery. O(n^2)
     for package in list_of_packages_on_truck:
         for index in distance_with_names:
             if package[1] == index[2]:  # Matched addresses
@@ -38,7 +38,7 @@ def get_greedy_route(list_of_packages_on_truck, updated_greedy_route):
     return shortest_value, index_of_shortest_value, package_id_of_shortest
 
 
-# Get the current distance using the row and column passed.
+# Get the current distance using the row and column passed. O(1)
 def get_current_distance(row, column):
     current_distance = distances[row][column]
     if distances[row][column] == '':
@@ -46,7 +46,7 @@ def get_current_distance(row, column):
     return float(current_distance)
 
 
-# Get the total distance of a truck's route
+# Get the total distance of a truck's route. O(n^2)
 def get_total_distance(truck_list):
     # Length of our trucks list
     list_length = len(truck_list)
@@ -82,8 +82,3 @@ def get_total_distance(truck_list):
     except IndexError:
         pass
     return total_distance
-
-
-# Calculates time of delivery for a package
-def calculate_time(distance, truck_list):
-    pass
